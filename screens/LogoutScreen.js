@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-const DashboardScreen = () => {
+const LogoutScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Dashboard</Text>
+            <Text style={styles.text}>Logout</Text>
         </View>
     );
 };
@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 24,
         fontWeight: 'bold',
+
     },
 });
 
-export default DashboardScreen;
+export default LogoutScreen;
