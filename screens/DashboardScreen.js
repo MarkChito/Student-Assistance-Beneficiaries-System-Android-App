@@ -1,24 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { styles } from '../assets/styles/dashboardStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from 'react';
 
 const DashboardScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Dashboard</Text>
+            <Text>Dashboard</Text>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-});
 
 export default DashboardScreen;

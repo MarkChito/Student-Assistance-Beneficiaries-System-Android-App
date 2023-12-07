@@ -1,25 +1,30 @@
 import { View, Text, StyleSheet } from 'react-native';
+import { styles } from '../assets/styles/transactionsStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TransactionsScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Transactions</Text>
+            <View style={styles.table}>
+                <View style={styles.tableRow}>
+                    <Text style={[styles.cell, styles.header]}>ID</Text>
+                    <Text style={[styles.cell, styles.header]}>Name</Text>
+                    <Text style={[styles.cell, styles.header]}>Age</Text>
+                </View>
+                <View style={styles.tableRow}>
+                    <Text style={styles.cell}>1</Text>
+                    <Text style={styles.cell}>John Doe</Text>
+                    <Text style={styles.cell}>30</Text>
+                </View>
+                <View style={styles.tableRow}>
+                    <Text style={styles.cell}>2</Text>
+                    <Text style={styles.cell}>Jane Smith</Text>
+                    <Text style={styles.cell}>25</Text>
+                </View>
+                {/* Add more rows as needed */}
+            </View>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-
-    },
-});
 
 export default TransactionsScreen;

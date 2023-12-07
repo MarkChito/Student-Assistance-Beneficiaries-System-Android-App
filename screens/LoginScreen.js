@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, TouchableOpacity, ImageBackground, Image, Keyboard, Linking, ActivityIndicator, SafeAreaView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { styles, colors, notificationStyle } from '../assets/styles/loginStyles';
 import CheckBox from 'expo-checkbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
 
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [responseCode, setResponseCode] = useState(null);
   const [notification, setNotification] = useState(null);
   const [loading, setLoading] = useState(false);
   const [ipAddress, setIpAddress] = useState(null);
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [errors, setErrors] = useState({});
+  const [responseCode, setResponseCode] = useState(null);
+
+  var qrCodeData = route.params?.qrCodeData;
 
   useEffect(() => {
     setIpAddress('192.168.100.10');
-  }, []);
+
+    if (qrCodeData) {
+      qrCodeLogin(qrCodeData);
+    }
+  }, [qrCodeData]);
 
   const rememberMe = () => {
     setToggleCheckBox(!toggleCheckBox);
@@ -36,16 +44,52 @@ const LoginScreen = () => {
         .then(response => response.json())
         .then(data => {
           const apiResponseCode = data.response_code;
+          const apiResponseContent = JSON.parse(data.response_content);
 
           setResponseCode(apiResponseCode);
 
-          if (apiResponseCode === 200) {
-            navigation.navigate('Main');
+          if (apiResponseCode == 200) {
+            const primary_key = apiResponseContent[0].primary_key;
+            const name = apiResponseContent[0].name;
+
+            const url_2 = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_student_data?login_primary_key=${primary_key}`;
+
+            fetch(url_2)
+              .then(response_2 => response_2.json())
+              .then(data_2 => {
+                const apiResponseCode_2 = data_2.response_code;
+                const apiResponseContent_2 = JSON.parse(data_2.response_content);
+
+                if (apiResponseCode_2 == 200) {
+                  const student_number = apiResponseContent_2[0].student_number;
+                  const image = `http://${ipAddress}/cdmstudentassistance.ssystem.online/dist/img/user_upload/${apiResponseContent_2[0].user_image}`;
+
+                  AsyncStorage.setItem('ipAddress', ipAddress);
+                  AsyncStorage.setItem('primary_key', primary_key);
+                  AsyncStorage.setItem('name', name);
+                  AsyncStorage.setItem('student_number', student_number);
+                  AsyncStorage.setItem('image', image);
+
+                  navigation.navigate('Main');
+
+                  setLoading(false);
+
+                  if (!toggleCheckBox) {
+                    setUsername(null);
+                    setPassword(null);
+                  }
+                }
+              })
+              .catch(error_2 => {
+                setLoading(false);
+
+                console.error('Error:', error_2);
+              });
           } else {
             setNotification('Invalid Username or Password');
-          }
 
-          setLoading(false);
+            setLoading(false);
+          }
         })
         .catch(error => {
           setLoading(false);
@@ -56,30 +100,66 @@ const LoginScreen = () => {
   };
 
   const qrCodeLogin = (qrCodeData) => {
-    if (qrCodeData && !loading) {
-      setLoading(true);
+    setLoading(true);
 
-      const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/qr_code_login?qr_code_data=${qrCodeData}`;
+    const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/qr_code_login?qr_code_data=${qrCodeData}`;
 
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const apiResponseCode = data.response_code;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const apiResponseCode = data.response_code;
+        const apiResponseContent = JSON.parse(data.response_content);
 
-          setResponseCode(apiResponseCode);
+        setResponseCode(apiResponseCode);
 
-          if (apiResponseCode === 200) {
-            navigation.navigate('Main');
-          } else {
-            setLoading(false);
+        if (apiResponseCode == 200) {
+          const primary_key = apiResponseContent[0].primary_key;
+          const name = apiResponseContent[0].name;
 
-            setNotification('Invalid QR Code');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
+          const url_2 = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_student_data?login_primary_key=${primary_key}`;
+
+          fetch(url_2)
+            .then(response_2 => response_2.json())
+            .then(data_2 => {
+              const apiResponseCode_2 = data_2.response_code;
+              const apiResponseContent_2 = JSON.parse(data_2.response_content);
+
+              if (apiResponseCode_2 == 200) {
+                const student_number = apiResponseContent_2[0].student_number;
+                const image = `http://${ipAddress}/cdmstudentassistance.ssystem.online/dist/img/user_upload/${apiResponseContent_2[0].user_image}`;
+
+                AsyncStorage.setItem('ipAddress', ipAddress);
+                AsyncStorage.setItem('primary_key', primary_key);
+                AsyncStorage.setItem('name', name);
+                AsyncStorage.setItem('student_number', student_number);
+                AsyncStorage.setItem('image', image);
+
+                navigation.navigate('Main');
+
+                setLoading(false);
+
+                setUsername(null);
+                setPassword(null);
+                setErrors({});
+                setToggleCheckBox(false);
+              }
+            })
+            .catch(error_2 => {
+              setLoading(false);
+
+              console.error('Error:', error_2);
+            });
+        } else {
+          setNotification('Invalid QR Code');
+
+          setLoading(false);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+
+    qrCodeData_param = null;
   }
 
   const register = () => {
@@ -90,7 +170,7 @@ const LoginScreen = () => {
   };
 
   const scanQrCode = () => {
-    navigation.navigate('QRCodeScanner', { qrCodeLogin });
+    navigation.navigate('QRCodeScanner');
   };
 
   const validateForm = () => {

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Vibration } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function App() {
+const QRCodeScanner = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-
-  const qrCodeLogin = route.params.qrCodeLogin;
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -25,9 +22,7 @@ export default function App() {
     setScanned(true);
     Vibration.vibrate();
 
-    qrCodeLogin(data);
-
-    navigation.navigate('Login');
+    navigation.navigate('Login', { qrCodeData: data });
   };
 
   if (hasPermission === null) {
@@ -39,10 +34,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
+      <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} style={StyleSheet.absoluteFillObject} />
       <Text style={styles.text}>Scan you QR Code</Text>
     </View>
   );
@@ -62,3 +54,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default QRCodeScanner;
