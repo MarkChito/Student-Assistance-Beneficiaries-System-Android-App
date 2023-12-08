@@ -5,7 +5,7 @@ import DashboardScreen from './DashboardScreen';
 import TransactionsScreen from './TransactionsScreen';
 import LogoutScreen from './LogoutScreen';
 import { styles } from '../assets/styles/mainStyles';
-import { View, Text, Image, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Linking, TouchableOpacity, BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +17,8 @@ const MainScreen = () => {
   const logout = async () => {
     try {
       await AsyncStorage.clear();
+
+      AsyncStorage.setItem("logout", "true");
 
       navigation.navigate("Login");
     } catch (error) {
@@ -36,26 +38,32 @@ const MainScreen = () => {
 }
 
 const HeaderDrawerContent = (props) => {
-  useEffect(() => {
-    retrieveData();
-  }, []);
-
   const [ipAddress, setIpAddress] = useState(null);
-  const [primaryKey, setPrimaryKey] = useState(null);
   const [name, setName] = useState(null);
   const [studentNumber, setStudentNumber] = useState(null);
   const [image, setImage] = useState(null);
 
+  useEffect(() => {
+    retrieveData();
+
+    const backAction = () => {
+      BackHandler.exitApp();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
+
   const retrieveData = async () => {
     try {
       const storedIpAddress = await AsyncStorage.getItem('ipAddress');
-      const storedPrimaryKey = await AsyncStorage.getItem('primary_key');
       const storedStudentNumber = await AsyncStorage.getItem('student_number');
       const storedName = await AsyncStorage.getItem('name');
       const storedImage = await AsyncStorage.getItem('image');
 
       setIpAddress(storedIpAddress);
-      setPrimaryKey(storedPrimaryKey);
       setStudentNumber(storedStudentNumber);
       setName(storedName);
       setImage(storedImage);

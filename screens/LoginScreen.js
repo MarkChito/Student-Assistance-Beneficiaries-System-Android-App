@@ -10,7 +10,7 @@ const LoginScreen = () => {
   const route = useRoute();
 
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState({});
   const [loading, setLoading] = useState(false);
   const [ipAddress, setIpAddress] = useState(null);
   const [username, setUsername] = useState(null);
@@ -31,6 +31,24 @@ const LoginScreen = () => {
   const rememberMe = () => {
     setToggleCheckBox(!toggleCheckBox);
   };
+
+  const getTransactions = (primary_key) => {
+    const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_transactions?login_primary_key=${primary_key}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const apiResponseCode = data.response_code;
+        const apiResponseContent = JSON.parse(data.response_content);
+
+        if (apiResponseCode == 200) {
+          AsyncStorage.setItem('data', JSON.stringify(apiResponseContent));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 
   const login = (username, password) => {
     if (validateForm() && !loading) {
@@ -70,14 +88,18 @@ const LoginScreen = () => {
                   AsyncStorage.setItem('student_number', student_number);
                   AsyncStorage.setItem('image', image);
 
+                  getTransactions(primary_key);
+
                   navigation.navigate('Main');
 
-                  setLoading(false);
+                  setNotification({});
 
                   if (!toggleCheckBox) {
                     setUsername(null);
                     setPassword(null);
                   }
+
+                  setLoading(false);
                 }
               })
               .catch(error_2 => {
@@ -86,7 +108,12 @@ const LoginScreen = () => {
                 console.error('Error:', error_2);
               });
           } else {
-            setNotification('Invalid Username or Password');
+            let notif = {};
+
+            notif.type = "danger";
+            notif.message = "Invalid Username or Password";
+
+            setNotification(notif);
 
             setLoading(false);
           }
@@ -134,14 +161,17 @@ const LoginScreen = () => {
                 AsyncStorage.setItem('student_number', student_number);
                 AsyncStorage.setItem('image', image);
 
+                getTransactions(primary_key);
+
                 navigation.navigate('Main');
 
-                setLoading(false);
+                setNotification({});
 
                 setUsername(null);
                 setPassword(null);
                 setErrors({});
                 setToggleCheckBox(false);
+                setLoading(false);
               }
             })
             .catch(error_2 => {
@@ -150,7 +180,12 @@ const LoginScreen = () => {
               console.error('Error:', error_2);
             });
         } else {
-          setNotification('Invalid QR Code');
+          let notif = {};
+
+          notif.type = "danger";
+          notif.message = "Invalid QR Code";
+
+          setNotification(notif);
 
           setLoading(false);
         }
@@ -187,7 +222,28 @@ const LoginScreen = () => {
     setErrors(errors);
 
     return Object.keys(errors).length === 0;
-  }
+  };
+
+  const checkLogoutState = async (key) => {
+    try {
+      const data = await AsyncStorage.getItem(key);
+
+      if (data !== null) {
+        let notif = {};
+
+        notif.type = "success";
+        notif.message = "You've been successfully signed out";
+
+        setNotification(notif);
+
+        AsyncStorage.clear();
+      }
+    } catch (error) {
+      console.error(`Error checking data for key: ${key}`, error);
+    }
+  };
+
+  checkLogoutState('logout');
 
   if (loading) {
     return (
@@ -200,9 +256,9 @@ const LoginScreen = () => {
 
   return (
     <ImageBackground source={require('../assets/img/bg.jpg')} style={styles.container}>
-      {notification ? (
-        <View style={notificationStyle(responseCode)}>
-          <Text style={styles.notificationMessage}>{notification}</Text>
+      {Object.keys(notification).length != 0 ? (
+        <View style={notificationStyle(notification)}>
+          <Text style={styles.notificationMessage}>{notification.message}</Text>
         </View>
       ) : null}
 

@@ -14,11 +14,11 @@ export const colors = {
     default: '',
 };
 
-export const notificationStyle = (responseCode) => ({
+export const notificationStyle = (notification) => ({
     width: 350,
     height: 'auto',
     paddingVertical: 10,
-    backgroundColor: responseCode === 200 ? colors.success : colors.danger,
+    backgroundColor: notification.type == "success" ? colors.success : colors.danger,
     borderRadius: 5,
     marginBottom: 10,
 });
