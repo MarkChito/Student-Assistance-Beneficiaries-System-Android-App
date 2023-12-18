@@ -17,7 +17,7 @@ const TransactionsScreen = () => {
 
     const retrieveData = async () => {
         try {
-            const jsonValue = await AsyncStorage.getItem('data');
+            const jsonValue = await AsyncStorage.getItem('transactionsData');
 
             if (jsonValue !== null) {
                 const parsedData = JSON.parse(jsonValue);

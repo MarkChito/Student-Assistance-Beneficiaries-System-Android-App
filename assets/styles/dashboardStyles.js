@@ -1,15 +1,17 @@
 import { StyleSheet } from "react-native";
 
 export const colors = {
-    primary: '#007bff',
-    secondary: '#6c757d',
-    success: '#28a745',
-    info: '#17a2b8',
-    warning: '#ffc107',
-    danger: '#dc3545',
-    light: '#f8f9fa',
-    dark: '#343a40',
-    muted: '#6c757d',
+    primary: '#007BFF',
+    secondary: '#6C757D',
+    success: '#28A745',
+    info: '#17A2B8',
+    warning: '#FFC107',
+    danger: '#DC3545',
+    light: '#F8F9FA',
+    dark: '#343A40',
+    white: '#FFFFFF',
+    black: '#000000',
+    muted: '#6C757D',
     default: '',
 };
 
@@ -17,9 +19,10 @@ export const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
         paddingTop: 20,
+        backgroundColor: colors.light,
     },
     cardContainer: {
-        marginBottom: 20,
+        marginBottom: 24,
         backgroundColor: "#FFFFFF",
     },
     cardGroup: {
@@ -63,7 +66,13 @@ export const styles = StyleSheet.create({
     noData: {
         textAlign: 'center',
         fontSize: 24,
-        color: 'gray',
+        color: colors.muted,
+    },
+    haveData: {
+        textAlign: 'center',
+        fontSize: 24,
+        color: colors.black,
+        fontWeight: "bold",
     },
     button: {
         paddingVertical: 12,
@@ -88,5 +97,46 @@ export const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 16,
+    },
+    cardTitle: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    expandCollapseButton: {
+        alignSelf: "flex-end",
+        color: colors.black,
+    },
+    procedureItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    procedureNumberEducational: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 8,
+        color: colors.white,
+        width: 20,
+        height: 20,
+        backgroundColor: colors.primary,
+        textAlign: "center",
+        borderRadius: 5,
+    },
+    procedureNumberScholarship: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 8,
+        color: colors.white,
+        width: 20,
+        height: 20,
+        backgroundColor: colors.success,
+        textAlign: "center",
+        borderRadius: 5,
+    },
+    procedureDescription: {
+        flex: 1,
+        fontSize: 16,
+        color: 'black',
     },
 })

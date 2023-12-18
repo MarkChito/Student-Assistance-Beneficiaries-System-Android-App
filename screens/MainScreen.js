@@ -66,7 +66,7 @@ const HeaderDrawerContent = (props) => {
       setIpAddress(storedIpAddress);
       setStudentNumber(storedStudentNumber);
       setName(storedName);
-      setImage(storedImage);
+      setImage(storedImage != `http://${ipAddress}/cdmstudentassistance.ssystem.online/dist/img/user_upload/` ? storedImage : `http://${ipAddress}/cdmstudentassistance.ssystem.online/dist/img/user_upload/default_user.png`);
     } catch (error) {
       console.error('Error retrieving data:', error);
     }

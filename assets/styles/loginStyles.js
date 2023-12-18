@@ -2,15 +2,17 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 
 export const colors = {
-    primary: '#007bff',
-    secondary: '#6c757d',
-    success: '#28a745',
-    info: '#17a2b8',
-    warning: '#ffc107',
-    danger: '#dc3545',
-    light: '#f8f9fa',
-    dark: '#343a40',
-    muted: '#6c757d',
+    primary: '#007BFF',
+    secondary: '#6C757D',
+    success: '#28A745',
+    info: '#17A2B8',
+    warning: '#FFC107',
+    danger: '#DC3545',
+    light: '#F8F9FA',
+    dark: '#343A40',
+    white: '#FFFFFF',
+    black: '#000000',
+    muted: '#6C757D',
     default: '',
 };
 
@@ -194,15 +196,14 @@ export const styles = StyleSheet.create({
     },
 
     modalBody: {
-        paddingVertical: 20,
-        paddingHorizontal: 10,
-        backgroundColor: '#F8F9FB',
+        padding: 10,
+        backgroundColor: colors.light,
     },
-    
+
     modalFooter: {
         flexDirection: "row",
         padding: 10,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: colors.white,
         justifyContent: "flex-end",
     },
 
@@ -210,7 +211,7 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    
+
     modalFooterButton: {
         backgroundColor: colors.danger,
         paddingVertical: 10,
@@ -232,4 +233,14 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderRightWidth: 0,
     },
+
+    note: {
+        flexDirection: "row",
+        marginBottom: 16,
+        width: 260,
+    },
+
+    noteNote: {
+        fontWeight: "bold",
+    }
 });

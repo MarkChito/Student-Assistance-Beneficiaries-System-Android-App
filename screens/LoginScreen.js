@@ -43,7 +43,61 @@ const LoginScreen = () => {
         const apiResponseContent = JSON.parse(data.response_content);
 
         if (apiResponseCode == 200) {
-          AsyncStorage.setItem('data', JSON.stringify(apiResponseContent));
+          AsyncStorage.setItem('transactionsData', JSON.stringify(apiResponseContent));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  const getProcedures = () => {
+    const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_procedures`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const apiResponseCode = data.response_code;
+        const apiResponseContent = JSON.parse(data.response_content);
+
+        if (apiResponseCode == 200) {
+          AsyncStorage.setItem('proceduresData', JSON.stringify(apiResponseContent));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  const getRequirements = () => {
+    const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_requirements`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const apiResponseCode = data.response_code;
+        const apiResponseContent = JSON.parse(data.response_content);
+
+        if (apiResponseCode == 200) {
+          AsyncStorage.setItem('requirementsData', JSON.stringify(apiResponseContent));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  const getSlots = () => {
+    const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_slots`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const apiResponseCode = data.response_code;
+        const apiResponseContent = JSON.parse(data.response_content);
+
+        if (apiResponseCode == 200) {
+          AsyncStorage.setItem('slotsData', JSON.stringify(apiResponseContent));
         }
       })
       .catch(error => {
@@ -79,7 +133,7 @@ const LoginScreen = () => {
                 const apiResponseCode_2 = data_2.response_code;
                 const apiResponseContent_2 = JSON.parse(data_2.response_content);
 
-                if (apiResponseCode_2 == 200) {
+                if (apiResponseCode_2 == 200 && apiResponseContent_2) {
                   const student_number = apiResponseContent_2[0].student_number;
                   const image = `http://${ipAddress}/cdmstudentassistance.ssystem.online/dist/img/user_upload/${apiResponseContent_2[0].user_image}`;
 
@@ -90,8 +144,9 @@ const LoginScreen = () => {
                   AsyncStorage.setItem('image', image);
 
                   getTransactions(primary_key);
-
-                  navigation.navigate('Main');
+                  getProcedures();
+                  getRequirements();
+                  getSlots();
 
                   setNotification({});
 
@@ -100,7 +155,7 @@ const LoginScreen = () => {
                     setPassword(null);
                   }
 
-                  setLoading(false);
+                  navigateToMain();
                 }
               })
               .catch(error_2 => {
@@ -163,8 +218,9 @@ const LoginScreen = () => {
                 AsyncStorage.setItem('image', image);
 
                 getTransactions(primary_key);
-
-                navigation.navigate('Main');
+                getProcedures();
+                getRequirements();
+                getSlots();
 
                 setNotification({});
 
@@ -172,7 +228,8 @@ const LoginScreen = () => {
                 setPassword(null);
                 setErrors({});
                 setToggleCheckBox(false);
-                setLoading(false);
+
+                navigateToMain();
               }
             })
             .catch(error_2 => {
@@ -225,28 +282,9 @@ const LoginScreen = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const checkLogoutState = async (key) => {
-    try {
-      const data = await AsyncStorage.getItem(key);
-
-      if (data !== null) {
-        let notif = {};
-
-        notif.type = "success";
-        notif.message = "You've been successfully signed out";
-
-        setNotification(notif);
-
-        AsyncStorage.clear();
-      }
-    } catch (error) {
-      console.error(`Error checking data for key: ${key}`, error);
-    }
-  };
-
   const resetIpAddress = (inputIpAddress) => {
     setIpAddress(inputIpAddress);
-    Keyboard.dismiss();
+
     setLoading(true);
 
     const url = `http://${inputIpAddress}/cdmstudentassistance.ssystem.online/api/check_connectivity`;
@@ -288,7 +326,24 @@ const LoginScreen = () => {
       });
   };
 
-  checkLogoutState('logout');
+  const closeModal = () => {
+    Keyboard.dismiss();
+
+    setShowModal(false);
+  };
+
+  const navigateToMain = () => {
+    let notif = {};
+
+    notif.type = "success";
+    notif.message = "You've been successfully signed out";
+
+    setNotification(notif);
+
+    navigation.navigate('Main');
+
+    setLoading(false);
+  }
 
   if (loading) {
     return (
@@ -308,15 +363,19 @@ const LoginScreen = () => {
               <Text style={styles.modalHeaderContent}>Localhost's IP Address</Text>
             </View>
             <View style={styles.modalBody}>
+              <View style={styles.note}>
+                <Text style={styles.noteNote}>Note: </Text>
+                <Text>Please use 'ipconfig' on your cmd to check your server's IP Address.</Text>
+              </View>
               <View style={styles.modalBodyInputGroup}>
                 <TextInput style={styles.modalBodyInput} placeholder='Enter IP Address' onChangeText={(val) => { setIpAddress(val) }} />
                 <Image source={require('../assets/img/ip_address.png')} style={styles.inputImage} />
               </View>
             </View>
             <View style={styles.modalFooter}>
-              {/* <TouchableOpacity style={[styles.modalFooterButton, { "marginEnd": 5 }]} onPress={() => closeModal()}>
+              <TouchableOpacity style={[styles.modalFooterButton, { "marginEnd": 5 }]} onPress={() => closeModal()}>
                 <Text style={styles.btnLoginText}>Close</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <TouchableOpacity style={[styles.modalFooterButton, { "backgroundColor": colors.primary }]} onPress={() => resetIpAddress(ipAddress)}>
                 <Text style={styles.btnLoginText}>Submit</Text>
               </TouchableOpacity>
