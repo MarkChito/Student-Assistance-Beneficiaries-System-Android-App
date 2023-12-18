@@ -17,6 +17,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState(null);
   const [errors, setErrors] = useState({});
   const [responseCode, setResponseCode] = useState(null);
+  const [showModal, setShowModal] = useState(true);
 
   var qrCodeData = route.params?.qrCodeData;
 
@@ -243,9 +244,49 @@ const LoginScreen = () => {
     }
   };
 
-  const closeModal = () => {
-    console.log("test");
-  }
+  const resetIpAddress = (inputIpAddress) => {
+    setIpAddress(inputIpAddress);
+    Keyboard.dismiss();
+    setLoading(true);
+
+    const url = `http://${inputIpAddress}/cdmstudentassistance.ssystem.online/api/check_connectivity`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Server not responding");
+        }
+        return response.json();
+      })
+      .then(data => {
+        const apiResponseCode = data.response_code;
+
+        setResponseCode(apiResponseCode);
+
+        let notif = {};
+
+        if (apiResponseCode === 200) {
+          notif.type = "success";
+          notif.message = "Connected to " + inputIpAddress;
+        } else {
+          notif.type = "danger";
+          notif.message = "Can't connect to the server.";
+        }
+
+        setNotification(notif);
+      })
+      .catch(error => {
+        let notif = {};
+        notif.type = "danger";
+        notif.message = "Can't connect to the server.";
+
+        setNotification(notif);
+      })
+      .finally(() => {
+        setLoading(false);
+        setShowModal(false);
+      });
+  };
 
   checkLogoutState('logout');
 
@@ -260,7 +301,7 @@ const LoginScreen = () => {
 
   return (
     <ImageBackground source={require('../assets/img/bg.jpg')} style={styles.container}>
-      <Modal transparent={true} visible={true}>
+      <Modal transparent={true} visible={showModal ? true : false}>
         <View style={styles.modal}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
@@ -273,17 +314,17 @@ const LoginScreen = () => {
               </View>
             </View>
             <View style={styles.modalFooter}>
-              <TouchableOpacity style={[styles.modalFooterButton, {"marginEnd": 5}]} onPress={() => closeModal()}>
+              {/* <TouchableOpacity style={[styles.modalFooterButton, { "marginEnd": 5 }]} onPress={() => closeModal()}>
                 <Text style={styles.btnLoginText}>Close</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalFooterButton, {"backgroundColor": colors.primary}]} onPress={() => closeModal()}>
+              </TouchableOpacity> */}
+              <TouchableOpacity style={[styles.modalFooterButton, { "backgroundColor": colors.primary }]} onPress={() => resetIpAddress(ipAddress)}>
                 <Text style={styles.btnLoginText}>Submit</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-      {/* {Object.keys(notification).length != 0 ? (
+      {Object.keys(notification).length != 0 ? (
         <View style={notificationStyle(notification)}>
           <Text style={styles.notificationMessage}>{notification.message}</Text>
         </View>
@@ -335,7 +376,7 @@ const LoginScreen = () => {
             <Text style={styles.register}>Register</Text>
           </TouchableOpacity>
         </View>
-      </View> */}
+      </View>
     </ImageBackground>
   );
 };
