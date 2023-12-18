@@ -174,4 +174,62 @@ export const styles = StyleSheet.create({
         height: 0.5,
         backgroundColor: '#CED4DA',
     },
+
+    modal: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#000000aa",
+    },
+
+    modalContent: {
+        backgroundColor: "#FFFFFFFF",
+        width: 300,
+    },
+
+    modalHeader: {
+        padding: 10,
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+    },
+
+    modalBody: {
+        paddingVertical: 20,
+        paddingHorizontal: 10,
+        backgroundColor: '#F8F9FB',
+    },
+    
+    modalFooter: {
+        flexDirection: "row",
+        padding: 10,
+        backgroundColor: '#FFFFFF',
+        justifyContent: "flex-end",
+    },
+
+    modalHeaderContent: {
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    
+    modalFooterButton: {
+        backgroundColor: colors.danger,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+
+    modalBodyInputGroup: {
+        flexDirection: 'row',
+    },
+
+    modalBodyInput: {
+        width: 240,
+        borderWidth: 1,
+        borderColor: colors.muted,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderTopLeftRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderRightWidth: 0,
+    },
 });

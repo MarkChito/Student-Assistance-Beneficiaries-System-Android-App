@@ -22,6 +22,9 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: "#FFFFFF",
     },
+    cardGroup: {
+        marginBottom: 16,
+    },
     card: {
         backgroundColor: colors.light,
         borderRadius: 8,
@@ -38,6 +41,11 @@ export const styles = StyleSheet.create({
     },
     scholarshipHeader: {
         backgroundColor: colors.success,
+    },
+    sectionHeader: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
     sectionTitle: {
         fontSize: 18,

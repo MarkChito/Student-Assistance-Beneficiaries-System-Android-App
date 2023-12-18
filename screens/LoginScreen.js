@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, TouchableOpacity, ImageBackground, Image, Keyboard, Linking, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, ImageBackground, Image, Keyboard, Linking, ActivityIndicator, SafeAreaView, Modal } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { styles, colors, notificationStyle } from '../assets/styles/loginStyles';
 import CheckBox from 'expo-checkbox';
@@ -243,6 +243,10 @@ const LoginScreen = () => {
     }
   };
 
+  const closeModal = () => {
+    console.log("test");
+  }
+
   checkLogoutState('logout');
 
   if (loading) {
@@ -256,7 +260,30 @@ const LoginScreen = () => {
 
   return (
     <ImageBackground source={require('../assets/img/bg.jpg')} style={styles.container}>
-      {Object.keys(notification).length != 0 ? (
+      <Modal transparent={true} visible={true}>
+        <View style={styles.modal}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalHeaderContent}>Localhost's IP Address</Text>
+            </View>
+            <View style={styles.modalBody}>
+              <View style={styles.modalBodyInputGroup}>
+                <TextInput style={styles.modalBodyInput} placeholder='Enter IP Address' onChangeText={(val) => { setIpAddress(val) }} />
+                <Image source={require('../assets/img/ip_address.png')} style={styles.inputImage} />
+              </View>
+            </View>
+            <View style={styles.modalFooter}>
+              <TouchableOpacity style={[styles.modalFooterButton, {"marginEnd": 5}]} onPress={() => closeModal()}>
+                <Text style={styles.btnLoginText}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalFooterButton, {"backgroundColor": colors.primary}]} onPress={() => closeModal()}>
+                <Text style={styles.btnLoginText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* {Object.keys(notification).length != 0 ? (
         <View style={notificationStyle(notification)}>
           <Text style={styles.notificationMessage}>{notification.message}</Text>
         </View>
@@ -308,7 +335,7 @@ const LoginScreen = () => {
             <Text style={styles.register}>Register</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
     </ImageBackground>
   );
 };
