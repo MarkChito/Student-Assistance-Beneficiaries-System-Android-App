@@ -18,8 +18,6 @@ const MainScreen = () => {
     try {
       await AsyncStorage.clear();
 
-      AsyncStorage.setItem("logout", "true");
-
       navigation.navigate("Login");
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);

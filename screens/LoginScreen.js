@@ -104,6 +104,24 @@ const LoginScreen = () => {
         console.error('Error:', error);
       });
   }
+  
+  const getApplications = (primary_key) => {
+    const url = `http://${ipAddress}/cdmstudentassistance.ssystem.online/api/get_applications?student_primary_key=${primary_key}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const apiResponseCode = data.response_code;
+        const apiResponseContent = JSON.parse(data.response_content);
+
+        if (apiResponseCode == 200) {
+          AsyncStorage.setItem('applicationsData', JSON.stringify(apiResponseContent));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 
   const login = (username, password) => {
     if (validateForm() && !loading) {
@@ -143,6 +161,7 @@ const LoginScreen = () => {
                   AsyncStorage.setItem('student_number', student_number);
                   AsyncStorage.setItem('image', image);
 
+                  getApplications(primary_key);
                   getTransactions(primary_key);
                   getProcedures();
                   getRequirements();
@@ -217,6 +236,7 @@ const LoginScreen = () => {
                 AsyncStorage.setItem('student_number', student_number);
                 AsyncStorage.setItem('image', image);
 
+                getApplications(primary_key);
                 getTransactions(primary_key);
                 getProcedures();
                 getRequirements();

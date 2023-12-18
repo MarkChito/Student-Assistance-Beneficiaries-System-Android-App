@@ -1,8 +1,12 @@
-import { View } from 'react-native';
+import {Text, SafeAreaView, ActivityIndicator } from 'react-native';
+import { styles, colors } from '../assets/styles/loginStyles';
 
 const LogoutScreen = () => {
     return (
-        <View></View>
+        <SafeAreaView style={styles.loadingContainer}>
+            <ActivityIndicator size='large' color={colors.primary} />
+            <Text>Please Wait...</Text>
+        </SafeAreaView>
     );
 };
 

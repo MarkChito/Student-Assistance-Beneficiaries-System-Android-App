@@ -139,4 +139,44 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
     },
+    cardAccepted: {
+        padding: 10,
+        backgroundColor: colors.primary,
+    },
+    cardPending: {
+        padding: 10,
+        backgroundColor: colors.info,
+    },
+    cardApproved: {
+        padding: 10,
+        backgroundColor: colors.success,
+    },
+    cardRejected: {
+        padding: 10,
+        backgroundColor: colors.danger,
+    },
+    notifHeader: {
+        color: colors.white,
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+    notifSubTitle: {
+        color: colors.white,
+        fontSize: 16,
+    },
+    line: {
+        marginVertical: 16,
+        height: 3,
+        backgroundColor: colors.white,
+    },
+    list: {
+        color: colors.white,
+        fontSize: 16,
+        marginStart: 16,
+        marginBottom: 10,
+    },
+    spacer:{
+        marginBottom: 16,
+    },
 })
